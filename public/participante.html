@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Área do Aluno - Academia</title>
+    <style>
+        :root { --bg: #0f172a; --card: #1e293b; --primary: #3b82f6; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); padding-bottom: 10px; margin-bottom: 30px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .evento-item { border-left: 4px solid var(--primary); background: #334155; padding: 15px; margin-bottom: 15px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-inscrever { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .status { font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+        .pendente { background: #f59e0b; color: #000; }
+        .pago { background: #22c55e; color: white; }
+        h2 { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Olá, <span id="user-nome">Aluno</span>!</h1>
+        <a href="/logout" style="color: #ef4444; text-decoration: none; font-weight: bold;">Sair</a>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>📅 Aulas Disponíveis</h2>
+            <div id="lista-eventos">Carregando...</div>
+        </div>
+
+        <div class="card">
+            <h2>✅ Minhas Inscrições</h2>
+            <div id="minhas-inscricoes">Você ainda não se inscreveu em nada.</div>
+        </div>
+    </div>
+
+    <script>
+        async function carregarTudo() {
+            // 1. Carregar Eventos para Inscrição
+            const resEv = await fetch("/eventos");
+            const eventos = await resEv.json();
+            document.getElementById("lista-eventos").innerHTML = eventos.map(e => `
+                <div class="evento-item">
+                    <div>
+                        <strong>${e.nome}</strong><br>
+                        <small>R$ ${e.valor.toFixed(2)}</small>
+                    </div>
+                    <button class="btn-inscrever" onclick="inscrever(${e.id})">Garantir Vaga</button>
+                </div>
+            `).join("");
+
+            // 2. Carregar Minhas Inscrições (Status)
+            // Precisamos criar essa rota no server.js ainda!
+            const resMinhas = await fetch("/meus-eventos");
+            const minhas = await resMinhas.json();
+            document.getElementById("minhas-inscricoes").innerHTML = minhas.map(m => `
+                <div class="evento-item" style="border-left-color: ${m.status === 'pago' ? '#22c55e' : '#f59e0b'}">
+                    <div>
+                        <strong>${m.nome_evento}</strong><br>
+                        Status: <span class="status ${m.status}">${m.status.toUpperCase()}</span>
+                    </div>
+                </div>
+            `).join("") || "Nenhuma inscrição encontrada.";
+        }
+
+async function inscrever(id) {
+   
+    const res = await fetch(`/inscrever/${id}`, { method: 'POST' }); 
+    const msg = await res.text();
+    alert(msg);
+    carregarTudo();
+}
+
+        carregarTudo();
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel Admin - Academia</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: white; padding: 20px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .item { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .btn-pago { background: #22c55e; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; }
+        .btn-del { background: #ef4444; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; margin-left: 5px; }
+        .pago { color: #22c55e; font-weight: bold; }
+        .pendente { color: #f59e0b; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Painel de Controle Administrativo</h1>
+    <a href="/logout" style="color: #ef4444;">Sair do Sistema</a>
+
+    <div class="card">
+        <h2>Criar Nova Aula/Evento</h2>
+        <form action="/criar-evento" method="POST">
+            <input type="text" name="nome" placeholder="Nome da Aula" required>
+            <textarea name="descricao" placeholder="Descrição"></textarea>
+            <input type="number" name="valor" placeholder="Valor R$" step="0.01">
+            <button type="submit" style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; cursor:pointer;">Criar Evento</button>
+        </form>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h2>Eventos Ativos</h2>
+            <div id="lista-eventos"></div>
+        </div>
+
+        <div class="card">
+            <h2>Inscrições e Pagamentos</h2>
+            <div id="lista-inscritos"></div>
+        </div>
+    </div>
+
+    <script>
+        async function carregarDados() {
+            // Carregar Eventos
+            const resEv = await fetch("/eventos");
+            const eventos = await resEv.json();
+            document.getElementById("lista-eventos").innerHTML = eventos.map(e => `
+                <div class="item">
+                    <span><strong>${e.nome}</strong> - R$ ${e.valor}</span>
+                </div>
+            `).join("");
+
+            // Carregar Inscritos
+            const resIns = await fetch("/admin/inscritos");
+            const inscritos = await resIns.json();
+            document.getElementById("lista-inscritos").innerHTML = inscritos.map(i => `
+                <div class="item">
+                    <div>
+                        <small>${i.evento_nome}</small><br>
+                        <strong>${i.email_participante}</strong><br>
+                        Status: <span class="${i.status}">${i.status}</span>
+                    </div>
+                    <div>
+                        ${i.status === 'pendente' ? `<button class="btn-pago" onclick="confirmar('${i.id}')">Confirmar Pago</button>` : '✅'}
+                        <button class="btn-del" onclick="remover('${i.id}')">Remover</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        async function confirmar(id) {
+            if(confirm("Confirmar pagamento?")) {
+                await fetch(`/admin/aprovar-pagamento/${id}`, { method: 'POST' });
+                carregarDados();
+            }
+        }
+
+        async function remover(id) {
+            if(confirm("Deseja realmente cancelar esta inscrição?")) {
+                await fetch(`/admin/cancelar-inscricao/${id}`, { method: 'POST' });
+                carregarDados();
+            }
+        }
+
+        carregarDados();
+    </script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - Endorfit</title>
+    <style>
+        /* Importando uma fonte moderna e limpa (Inter) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            /* Definindo a paleta de cores do sistema baseada na imagem */
+            --primary-bg: #E8F5E9; /* Verde-azulado claro para o fundo */
+            --card-bg: #FFFFFF; /* Branco puro para o card */
+            --primary-color: #2E7D32; /* Verde escuro para o botão e textos principais */
+            --primary-color-hover: #1B5E20; /* Verde mais escuro para o hover do botão */
+            --text-color: #1A1A1A; /* Quase preto para textos */
+            --text-muted: #757575; /* Cinza para textos secundários e placeholders */
+            --border-color: #E0E0E0; /* Cinza claro para as bordas dos inputs */
+            --focus-color: #A5D6A7; /* Verde claro para o foco dos inputs */
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* Sombra suave para o card */
+        }
+
+        /* Redefinindo margens e fontes padrão */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Configuração do fundo da página */
+        body {
+            background-image: linear-gradient(135deg, #A7D7C5 0%, #D8F0E4 100%); /* Degradê verde-azulado suave */
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Ocupa a altura total da tela */
+            padding: 20px;
+        }
+
+        /* Estilização do card principal */
+        .register-card {
+            background-color: var(--card-bg);
+            padding: 40px;
+            border-radius: 16px; /* Bordas suaves e arredondadas */
+            box-shadow: var(--shadow); /* Adiciona sombra sutil */
+            width: 100%;
+            max-width: 400px; /* Largura máxima do card */
+            text-align: center; /* Centraliza o conteúdo dentro do card */
+        }
+
+        /* Ícone de fogo */
+        .brand-icon {
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        /* Título principal */
+        .brand-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        /* Subtítulo */
+        .sub-title {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        /* Estilização do formulário */
+        .register-form {
+            display: flex;
+            flex-direction: column; /* Organiza os inputs em coluna */
+            gap: 16px; /* Espaçamento entre os campos */
+        }
+
+        /* Container para os inputs com ícones */
+        .input-group {
+            position: relative;
+        }
+
+        /* Ícones dentro dos inputs */
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        /* Estilização geral dos inputs */
+        input {
+            width: 100%;
+            padding: 12px 12px 12px 42px; /* Adiciona padding à esquerda para o ícone */
+            border-radius: 8px; /* Cantos arredondados */
+            border: 1px solid var(--border-color); /* Borda cinza claro */
+            font-size: 14px;
+            background-color: #F9F9F9; /* Fundo levemente cinza */
+            color: var(--text-color);
+            transition: border-color 0.2s, background-color 0.2s; /* Transição suave */
+        }
+
+        /* Placeholder mais claro */
+        input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Foco nos inputs */
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color); /* Borda verde escuro no foco */
+            background-color: var(--card-bg); /* Fundo branco no foco */
+        }
+
+        /* Botão de envio */
+        button {
+            background-color: #1A3A34; /* Cor verde escuro do botão original */
+            color: #FFFFFF;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        /* Hover no botão */
+        button:hover {
+            background-color: #142D28; /* Verde ainda mais escuro no hover */
+        }
+
+        /* Link de voltar para o login */
+        .login-link {
+            font-size: 12px;
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        .login-link:hover {
+            color: var(--primary-color-hover);
+            text-decoration: underline; /* Adiciona sublinhado no hover */
+        }
+    </style>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <div class="register-card">
+        <div class="brand-icon">🔥</div>
+        <div class="brand-title">Criar Conta</div>
+
+        <div class="sub-title">Entre para a Endorfit</div>
+
+        <form class="register-form" action="/cadastrar" method="POST">
+            <div class="input-group">
+                <i class='bx bx-user input-icon'></i>
+                <input type="text" id="nome" name="nome" placeholder="Nome completo" required>
+            </div>
+
+            <div class="input-group">
+                <i class='bx bx-envelope input-icon'></i>
+                <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+
+            <div class="input-group">
+                <i class='bx bx-lock-alt input-icon'></i>
+                <input type="password" id="senha" name="senha" placeholder="Senha" required>
+            </div>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+
+        <a href="login.html" class="login-link">Voltar para login</a>
+    </div>
+
+</body>
+</html>
