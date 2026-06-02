@@ -2,90 +2,534 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel Admin - Academia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Endorfit</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; padding: 20px; }
-        .card { background: #1e293b; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        input, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: none; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .item { background: #334155; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
-        .btn-pago { background: #22c55e; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; }
-        .btn-del { background: #ef4444; color: white; border: none; padding: 8px; cursor: pointer; border-radius: 5px; margin-left: 5px; }
-        .pago { color: #22c55e; font-weight: bold; }
-        .pendente { color: #f59e0b; font-weight: bold; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg:       #0b0f14;
+            --surface:  #111820;
+            --card:     #18222e;
+            --border:   rgba(255,255,255,0.07);
+            --border2:  rgba(255,255,255,0.12);
+            --accent:   #3ecf8e;
+            --accent2:  #2ab87a;
+            --text:     #e8edf2;
+            --muted:    #7a8fa6;
+            --danger:   #f05252;
+            --warning:  #f59e0b;
+            --success:  #3ecf8e;
+            --info:     #3b82f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* ---- SIDEBAR ---- */
+        .layout { display: flex; flex: 1; }
+
+        aside {
+            width: 220px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px 0;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+        }
+
+        .brand {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            padding: 0 20px 24px;
+            border-bottom: 1px solid var(--border);
+            color: var(--accent);
+        }
+        .brand span { color: var(--text); }
+
+        nav { margin-top: 20px; flex: 1; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 20px;
+            font-size: 14px;
+            color: var(--muted);
+            cursor: pointer;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .nav-item i { font-size: 18px; }
+        .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+        .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(62,207,142,0.06); }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-logout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--danger);
+            font-size: 13px;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+        .btn-logout:hover { opacity: 1; }
+
+        /* ---- MAIN ---- */
+        .main { flex: 1; padding: 32px; overflow-y: auto; }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .page-title { font-size: 22px; font-weight: 700; }
+        .page-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+        /* ---- STAT CARDS ---- */
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+
+        .stat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 44px; height: 44px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .stat-icon.green  { background: rgba(62,207,142,0.12); color: var(--accent); }
+        .stat-icon.blue   { background: rgba(59,130,246,0.12); color: var(--info); }
+        .stat-icon.yellow { background: rgba(245,158,11,0.12);  color: var(--warning); }
+
+        .stat-label { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+        .stat-value { font-size: 26px; font-weight: 700; }
+
+        /* ---- GRID PRINCIPAL ---- */
+        .grid2 { display: grid; grid-template-columns: 1fr 1.6fr; gap: 20px; }
+
+        /* ---- CARDS ---- */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-header i { font-size: 18px; color: var(--accent); }
+
+        .card-body { padding: 20px; }
+
+        /* ---- FORM CRIAR EVENTO ---- */
+        .form-group { margin-bottom: 14px; }
+
+        label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+
+        input[type=text], input[type=number], textarea {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        input:focus, textarea:focus { border-color: var(--accent); }
+        textarea { resize: vertical; min-height: 72px; }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--accent);
+            color: #0b1a13;
+            border: none;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .btn-primary:hover { background: var(--accent2); }
+
+        /* ---- LISTA EVENTOS ---- */
+        .evento-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .evento-item:last-child { border-bottom: none; }
+        .evento-item-nome { font-size: 14px; font-weight: 500; }
+        .evento-item-valor { font-size: 13px; color: var(--accent); font-weight: 600; }
+
+        /* ---- TABELA INSCRIÇÕES ---- */
+        .table-wrap { overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+        th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* ---- BADGES STATUS ---- */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-pendente { background: rgba(245,158,11,0.15); color: var(--warning); }
+        .badge-pago     { background: rgba(62,207,142,0.12); color: var(--success); }
+
+        /* ---- BOTÕES AÇÃO ---- */
+        .btn-sm {
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm:hover { opacity: 0.8; }
+        .btn-ok  { background: rgba(62,207,142,0.15); color: var(--success); }
+        .btn-del { background: rgba(240,82,82,0.15);  color: var(--danger); }
+
+        /* ---- EMPTY ---- */
+        .empty {
+            text-align: center;
+            padding: 32px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+        .empty i { font-size: 32px; display: block; margin-bottom: 8px; opacity: 0.4; }
+
+        /* ---- TOAST ---- */
+        #toast {
+            position: fixed; bottom: 24px; right: 24px;
+            background: var(--card);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            opacity: 0; transform: translateY(12px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 999;
+        }
+        #toast.show { opacity: 1; transform: translateY(0); }
+        #toast.ok  { border-left: 3px solid var(--success); }
+        #toast.err { border-left: 3px solid var(--danger); }
+
+        /* ---- LOADING ---- */
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid var(--border2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            display: inline-block; vertical-align: middle; margin-right: 8px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <h1>Painel de Controle Administrativo</h1>
-    <a href="/logout" style="color: #ef4444;">Sair do Sistema</a>
+<div class="layout">
 
-    <div class="card">
-        <h2>Criar Nova Aula/Evento</h2>
-        <form action="/criar-evento" method="POST">
-            <input type="text" name="nome" placeholder="Nome da Aula" required>
-            <textarea name="descricao" placeholder="Descrição"></textarea>
-            <input type="number" name="valor" placeholder="Valor R$" step="0.01">
-            <button type="submit" style="width:100%; padding:10px; background:#3b82f6; color:white; border:none; cursor:pointer;">Criar Evento</button>
-        </form>
-    </div>
+    <!-- SIDEBAR -->
+    <aside>
+        <div class="brand">ENDOR<span>FIT</span></div>
+        <nav>
+            <a class="nav-item active" onclick="mostrarSecao('eventos')">
+                <i class='bx bx-calendar-plus'></i> Eventos
+            </a>
+            <a class="nav-item" onclick="mostrarSecao('inscricoes')">
+                <i class='bx bx-group'></i> Inscrições
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="/logout" class="btn-logout">
+                <i class='bx bx-log-out'></i> Sair do sistema
+            </a>
+        </div>
+    </aside>
 
-    <div class="grid">
-        <div class="card">
-            <h2>Eventos Ativos</h2>
-            <div id="lista-eventos"></div>
+    <!-- CONTEÚDO -->
+    <div class="main">
+
+        <!-- STATS -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-icon green"><i class='bx bx-calendar'></i></div>
+                <div>
+                    <div class="stat-label">Eventos ativos</div>
+                    <div class="stat-value" id="stat-eventos">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class='bx bx-user-check'></i></div>
+                <div>
+                    <div class="stat-label">Inscrições totais</div>
+                    <div class="stat-value" id="stat-total">—</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon yellow"><i class='bx bx-time-five'></i></div>
+                <div>
+                    <div class="stat-label">Pendentes</div>
+                    <div class="stat-value" id="stat-pendentes">—</div>
+                </div>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>Inscrições e Pagamentos</h2>
-            <div id="lista-inscritos"></div>
+        <!-- SEÇÃO EVENTOS -->
+        <div id="secao-eventos">
+            <div class="grid2">
+                <!-- Criar evento -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class='bx bx-plus-circle'></i> Criar novo evento
+                    </div>
+                    <div class="card-body">
+                        <form action="/criar-evento" method="POST">
+                            <div class="form-group">
+                                <label>Nome da aula / evento</label>
+                                <input type="text" name="nome" placeholder="Ex: Spinning Avançado" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Descrição</label>
+                                <textarea name="descricao" placeholder="Descreva o evento..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor (R$)</label>
+                                <input type="number" name="valor" placeholder="0.00" step="0.01" min="0">
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class='bx bx-check'></i> Criar evento
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Lista eventos -->
+                <div class="card">
+                    <div class="card-header">
+                        <i class='bx bx-list-ul'></i> Eventos cadastrados
+                    </div>
+                    <div class="card-body" id="lista-eventos">
+                        <div class="empty"><span class="spinner"></span> Carregando...</div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <script>
-        async function carregarDados() {
-            // Carregar Eventos
-            const resEv = await fetch("/eventos");
-            const eventos = await resEv.json();
-            document.getElementById("lista-eventos").innerHTML = eventos.map(e => `
-                <div class="item">
-                    <span><strong>${e.nome}</strong> - R$ ${e.valor}</span>
+        <!-- SEÇÃO INSCRIÇÕES -->
+        <div id="secao-inscricoes" style="display:none">
+            <div class="card">
+                <div class="card-header">
+                    <i class='bx bx-group'></i> Inscrições e pagamentos
                 </div>
-            `).join("");
-
-            // Carregar Inscritos
-            const resIns = await fetch("/admin/inscritos");
-            const inscritos = await resIns.json();
-            document.getElementById("lista-inscritos").innerHTML = inscritos.map(i => `
-                <div class="item">
-                    <div>
-                        <small>${i.evento_nome}</small><br>
-                        <strong>${i.email_participante}</strong><br>
-                        Status: <span class="${i.status}">${i.status}</span>
-                    </div>
-                    <div>
-                        ${i.status === 'pendente' ? `<button class="btn-pago" onclick="confirmar('${i.id}')">Confirmar Pago</button>` : '✅'}
-                        <button class="btn-del" onclick="remover('${i.id}')">Remover</button>
-                    </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Evento</th>
+                                <th>Participante</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-inscritos">
+                            <tr><td colspan="5"><div class="empty"><span class="spinner"></span> Carregando...</div></td></tr>
+                        </tbody>
+                    </table>
                 </div>
-            `).join("");
-        }
+            </div>
+        </div>
 
-        async function confirmar(id) {
-            if(confirm("Confirmar pagamento?")) {
-                await fetch(`/admin/aprovar-pagamento/${id}`, { method: 'POST' });
-                carregarDados();
-            }
-        }
+    </div><!-- .main -->
+</div><!-- .layout -->
 
-        async function remover(id) {
-            if(confirm("Deseja realmente cancelar esta inscrição?")) {
-                await fetch(`/admin/cancelar-inscricao/${id}`, { method: 'POST' });
-                carregarDados();
-            }
-        }
+<div id="toast"></div>
 
-        carregarDados();
-    </script>
+<script>
+    function mostrarSecao(nome) {
+        document.getElementById('secao-eventos').style.display    = nome === 'eventos'    ? '' : 'none';
+        document.getElementById('secao-inscricoes').style.display = nome === 'inscricoes' ? '' : 'none';
+        document.querySelectorAll('.nav-item').forEach((el, i) => {
+            el.classList.toggle('active', (nome === 'eventos' && i === 0) || (nome === 'inscricoes' && i === 1));
+        });
+    }
+
+    function toast(msg, tipo = 'ok') {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'show ' + tipo;
+        clearTimeout(t._t);
+        t._t = setTimeout(() => t.className = '', 3200);
+    }
+
+    function esc(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function carregarDados() {
+        await Promise.all([carregarEventos(), carregarInscritos()]);
+    }
+
+    async function carregarEventos() {
+        const res = await fetch('/eventos');
+        const eventos = await res.json();
+
+        document.getElementById('stat-eventos').textContent = eventos.length;
+
+        const cont = document.getElementById('lista-eventos');
+        if (!eventos.length) {
+            cont.innerHTML = '<div class="empty"><i class="bx bx-calendar-x"></i>Nenhum evento criado ainda.</div>';
+            return;
+        }
+        cont.innerHTML = eventos.map(e => `
+            <div class="evento-item">
+                <div style="flex:1">
+                    <div class="evento-item-nome">${esc(e.nome)}</div>
+                    <div style="font-size:12px;color:var(--muted);margin-top:2px">${esc(e.descricao || '—')}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:12px">
+                    <div class="evento-item-valor">R$ ${Number(e.valor || 0).toFixed(2).replace('.',',')}</div>
+                    <button class="btn-sm btn-del" onclick="deletarEvento(${e.id}, this)">
+                        <i class='bx bx-trash'></i> Excluir
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async function carregarInscritos() {
+        const res = await fetch('/admin/inscritos');
+        const lista = await res.json();
+
+        const pendentes = lista.filter(i => i.status === 'pendente').length;
+        document.getElementById('stat-total').textContent    = lista.length;
+        document.getElementById('stat-pendentes').textContent = pendentes;
+
+        const tbody = document.getElementById('tbody-inscritos');
+        if (!lista.length) {
+            tbody.innerHTML = '<tr><td colspan="5"><div class="empty"><i class="bx bx-inbox"></i>Nenhuma inscrição ainda.</div></td></tr>';
+            return;
+        }
+        tbody.innerHTML = lista.map(i => `
+            <tr>
+                <td style="color:var(--muted)">#${i.id}</td>
+                <td>${esc(i.evento_nome)}</td>
+                <td>${esc(i.email_participante)}</td>
+                <td>
+                    ${i.status === 'pago'
+                        ? `<span class="badge badge-pago"><i class='bx bx-check'></i> Confirmado</span>`
+                        : `<span class="badge badge-pendente"><i class='bx bx-time'></i> Pendente</span>`}
+                </td>
+                <td style="display:flex;gap:6px;flex-wrap:wrap">
+                    ${i.status === 'pendente'
+                        ? `<button class="btn-sm btn-ok" onclick="aprovar(${i.id}, this)"><i class='bx bx-check-circle'></i> Confirmar</button>`
+                        : `<span style="font-size:12px;color:var(--success)">✅ Pago</span>`}
+                    <button class="btn-sm btn-del" onclick="remover(${i.id}, this)"><i class='bx bx-trash'></i> Remover</button>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    async function aprovar(id, btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span>`;
+        const res = await fetch(`/admin/aprovar-pagamento/${id}`, { method: 'POST' });
+        if (res.ok) { toast('Pagamento confirmado!', 'ok'); await carregarInscritos(); }
+        else { toast('Erro ao confirmar.', 'err'); btn.disabled = false; }
+    }
+
+    async function remover(id, btn) {
+        if (!confirm('Remover esta inscrição?')) return;
+        btn.disabled = true;
+        const res = await fetch(`/admin/cancelar-inscricao/${id}`, { method: 'POST' });
+        if (res.ok) { toast('Inscrição removida.', 'ok'); await carregarInscritos(); }
+        else { toast('Erro ao remover.', 'err'); btn.disabled = false; }
+    }
+
+    async function deletarEvento(id, btn) {
+        if (!confirm('Excluir este evento? Todas as inscrições vinculadas também serão removidas.')) return;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner"></span>`;
+        const res = await fetch(`/admin/deletar-evento/${id}`, { method: 'POST' });
+        if (res.ok) { toast('Evento excluído.', 'ok'); await carregarDados(); }
+        else { toast('Erro ao excluir evento.', 'err'); btn.disabled = false; btn.innerHTML = `<i class='bx bx-trash'></i> Excluir`; }
+    }
+
+    carregarDados();
+</script>
 </body>
 </html>

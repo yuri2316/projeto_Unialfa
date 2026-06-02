@@ -127,6 +127,18 @@ app.post("/criar-evento", verificarAdmin, (req, res) => {
     });
 });
 
+app.post("/admin/deletar-evento/:id", verificarAdmin, (req, res) => {
+    const idEvento = req.params.id;
+    // Remove as inscrições do evento primeiro, depois o evento
+    db.run(`DELETE FROM inscricoes WHERE id_evento = ?`, [idEvento], (err) => {
+        if (err) return res.status(500).send("Erro ao remover inscrições do evento.");
+        db.run(`DELETE FROM eventos WHERE id = ?`, [idEvento], (err2) => {
+            if (err2) return res.status(500).send("Erro ao deletar evento.");
+            res.send("OK");
+        });
+    });
+});
+
 // LISTA DE TODOS OS INSCRITOS PARA O ADMIN
 app.get("/admin/inscritos", verificarAdmin, (req, res) => {
     const sql = `SELECT 

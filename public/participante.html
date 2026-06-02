@@ -2,78 +2,417 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Área do Aluno - Academia</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Endorfit - Minha Área</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --primary: #3b82f6; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
-        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--primary); padding-bottom: 10px; margin-bottom: 30px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
-        .evento-item { border-left: 4px solid var(--primary); background: #334155; padding: 15px; margin-bottom: 15px; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-inscrever { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-        .status { font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
-        .pendente { background: #f59e0b; color: #000; }
-        .pago { background: #22c55e; color: white; }
-        h2 { color: var(--primary); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-bg: #E8F5E9;
+            --card-bg: #FFFFFF;
+            --primary-color: #2E7D32;
+            --primary-dark: #1B5E20;
+            --accent: #1A3A34;
+            --text-color: #1A1A1A;
+            --text-muted: #757575;
+            --border-color: #E0E0E0;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #A7D7C5 0%, #D8F0E4 100%);
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        /* ---- HEADER ---- */
+        header {
+            background: var(--accent);
+            color: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand { font-size: 20px; font-weight: 700; letter-spacing: 2px; }
+        .brand span { color: #A7D7C5; }
+
+        .header-right { display: flex; align-items: center; gap: 16px; }
+
+        .user-info { font-size: 14px; opacity: 0.85; }
+        .user-info strong { display: block; font-size: 15px; opacity: 1; }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+        /* ---- MAIN ---- */
+        main { max-width: 900px; margin: 32px auto; padding: 0 20px; }
+
+        /* ---- SEÇÃO MINHAS INSCRIÇÕES ---- */
+        .section { margin-bottom: 32px; }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title i { font-size: 22px; }
+
+        /* ---- CARDS DE INSCRIÇÃO ---- */
+        .inscricoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 14px;
+        }
+
+        .inscricao-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .inscricao-nome { font-size: 15px; font-weight: 600; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            width: fit-content;
+        }
+        .badge-pendente { background: #FEF3C7; color: #92400E; }
+        .badge-pago     { background: #DCFCE7; color: #166534; }
+
+        /* ---- CARDS DE EVENTO ---- */
+        .eventos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 16px;
+        }
+
+        .evento-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .evento-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+
+        .evento-nome { font-size: 16px; font-weight: 700; }
+
+        .evento-descricao { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+        .evento-valor {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .evento-valor span { font-size: 13px; font-weight: 400; color: var(--text-muted); }
+
+        .btn-inscrever {
+            margin-top: auto;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 11px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-inscrever:hover { background: var(--primary-dark); }
+        .btn-inscrever:disabled {
+            background: #A5D6A7;
+            cursor: not-allowed;
+        }
+
+        /* ---- EMPTY STATE ---- */
+        .empty-state {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .empty-state i { font-size: 40px; display: block; margin-bottom: 12px; opacity: 0.4; }
+        .empty-state p { font-size: 14px; }
+
+        /* ---- TOAST ---- */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--accent);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 999;
+            max-width: 320px;
+        }
+        #toast.show { opacity: 1; transform: translateY(0); }
+        #toast.erro { background: var(--danger); }
+
+        /* ---- LOADING ---- */
+        .loading {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .spinner {
+            width: 28px; height: 28px;
+            border: 3px solid #D1FAE5;
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Olá, <span id="user-nome">Aluno</span>!</h1>
-        <a href="/logout" style="color: #ef4444; text-decoration: none; font-weight: bold;">Sair</a>
+<header>
+    <div class="brand">ENDOR<span>FIT</span></div>
+    <div class="header-right">
+        <div class="user-info">
+            Bem-vindo(a),
+            <strong id="nome-usuario">...</strong>
+        </div>
+        <a href="/logout" class="btn-logout">
+            <i class='bx bx-log-out'></i> Sair
+        </a>
+    </div>
+</header>
+
+<main>
+
+    <!-- MINHAS INSCRIÇÕES -->
+    <div class="section">
+        <h2 class="section-title">
+            <i class='bx bx-calendar-check'></i>
+            Minhas Inscrições
+        </h2>
+        <div id="container-inscricoes">
+            <div class="loading"><div class="spinner"></div>Carregando...</div>
+        </div>
     </div>
 
-    <div class="grid">
-        <div class="card">
-            <h2>📅 Aulas Disponíveis</h2>
-            <div id="lista-eventos">Carregando...</div>
-        </div>
-
-        <div class="card">
-            <h2>✅ Minhas Inscrições</h2>
-            <div id="minhas-inscricoes">Você ainda não se inscreveu em nada.</div>
+    <!-- EVENTOS DISPONÍVEIS -->
+    <div class="section">
+        <h2 class="section-title">
+            <i class='bx bx-trophy'></i>
+            Eventos Disponíveis
+        </h2>
+        <div id="container-eventos">
+            <div class="loading"><div class="spinner"></div>Carregando...</div>
         </div>
     </div>
 
-    <script>
-        async function carregarTudo() {
-            // 1. Carregar Eventos para Inscrição
-            const resEv = await fetch("/eventos");
+</main>
+
+<div id="toast"></div>
+
+<script>
+    // ---- UTILITÁRIOS ----
+    function mostrarToast(msg, erro = false) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'show' + (erro ? ' erro' : '');
+        clearTimeout(t._timeout);
+        t._timeout = setTimeout(() => { t.className = ''; }, 3500);
+    }
+
+    // ---- BUSCAR DADOS ----
+    async function carregarDados() {
+        await Promise.all([carregarInscricoes(), carregarEventos()]);
+    }
+
+    async function carregarInscricoes() {
+        try {
+            const res = await fetch('/meus-eventos');
+            if (res.status === 401) {
+                window.location.href = '/login.html';
+                return;
+            }
+            const inscricoes = await res.json();
+            renderInscricoes(inscricoes);
+        } catch (e) {
+            document.getElementById('container-inscricoes').innerHTML =
+                '<p style="color:#ef4444;font-size:14px">Erro ao carregar inscrições.</p>';
+        }
+    }
+
+    async function carregarEventos() {
+        try {
+            const [resEv, resIns] = await Promise.all([
+                fetch('/eventos'),
+                fetch('/meus-eventos')
+            ]);
             const eventos = await resEv.json();
-            document.getElementById("lista-eventos").innerHTML = eventos.map(e => `
-                <div class="evento-item">
-                    <div>
-                        <strong>${e.nome}</strong><br>
-                        <small>R$ ${e.valor.toFixed(2)}</small>
-                    </div>
-                    <button class="btn-inscrever" onclick="inscrever(${e.id})">Garantir Vaga</button>
-                </div>
-            `).join("");
+            const inscricoes = await resIns.json();
 
-            // 2. Carregar Minhas Inscrições (Status)
-            // Precisamos criar essa rota no server.js ainda!
-            const resMinhas = await fetch("/meus-eventos");
-            const minhas = await resMinhas.json();
-            document.getElementById("minhas-inscricoes").innerHTML = minhas.map(m => `
-                <div class="evento-item" style="border-left-color: ${m.status === 'pago' ? '#22c55e' : '#f59e0b'}">
-                    <div>
-                        <strong>${m.nome_evento}</strong><br>
-                        Status: <span class="status ${m.status}">${m.status.toUpperCase()}</span>
-                    </div>
-                </div>
-            `).join("") || "Nenhuma inscrição encontrada.";
+            // IDs dos eventos já inscritos
+            const inscritos = new Set(inscricoes.map(i => i.nome_evento));
+            renderEventos(eventos, inscritos);
+        } catch (e) {
+            document.getElementById('container-eventos').innerHTML =
+                '<p style="color:#ef4444;font-size:14px">Erro ao carregar eventos.</p>';
+        }
+    }
+
+    // ---- RENDERIZAR INSCRIÇÕES ----
+    function renderInscricoes(lista) {
+        const cont = document.getElementById('container-inscricoes');
+
+        if (!lista || lista.length === 0) {
+            cont.innerHTML = `
+                <div class="empty-state">
+                    <i class='bx bx-calendar-x'></i>
+                    <p>Você ainda não está inscrito em nenhum evento.<br>Confira os eventos disponíveis abaixo!</p>
+                </div>`;
+            return;
         }
 
-async function inscrever(id) {
-   
-    const res = await fetch(`/inscrever/${id}`, { method: 'POST' }); 
-    const msg = await res.text();
-    alert(msg);
-    carregarTudo();
-}
+        cont.innerHTML = `<div class="inscricoes-grid">
+            ${lista.map(i => `
+                <div class="inscricao-card">
+                    <div class="inscricao-nome">${escHtml(i.nome_evento)}</div>
+                    <div>
+                        ${i.status === 'pago'
+                            ? `<span class="badge badge-pago"><i class='bx bx-check-circle'></i> Confirmado</span>`
+                            : `<span class="badge badge-pendente"><i class='bx bx-time'></i> Pendente</span>`
+                        }
+                    </div>
+                    ${i.status === 'pendente'
+                        ? `<p style="font-size:12px;color:var(--text-muted)">Aguardando confirmação do pagamento pelo administrador.</p>`
+                        : `<p style="font-size:12px;color:#166534">Pagamento confirmado! Sua vaga está garantida.</p>`
+                    }
+                </div>
+            `).join('')}
+        </div>`;
+    }
 
-        carregarTudo();
-    </script>
+    // ---- RENDERIZAR EVENTOS ----
+    function renderEventos(eventos, inscritos) {
+        const cont = document.getElementById('container-eventos');
+
+        if (!eventos || eventos.length === 0) {
+            cont.innerHTML = `
+                <div class="empty-state">
+                    <i class='bx bx-calendar'></i>
+                    <p>Nenhum evento disponível no momento.<br>Volte em breve!</p>
+                </div>`;
+            return;
+        }
+
+        cont.innerHTML = `<div class="eventos-grid">
+            ${eventos.map(e => {
+                const jaInscrito = inscritos.has(e.nome);
+                return `
+                <div class="evento-card">
+                    <div class="evento-nome">${escHtml(e.nome)}</div>
+                    <div class="evento-descricao">${escHtml(e.descricao || 'Sem descrição.')}</div>
+                    <div class="evento-valor">
+                        R$ ${Number(e.valor || 0).toFixed(2).replace('.', ',')}
+                        <span>/ por pessoa</span>
+                    </div>
+                    ${jaInscrito
+                        ? `<button class="btn-inscrever" disabled>
+                               <i class='bx bx-check'></i> Já inscrito
+                           </button>`
+                        : `<button class="btn-inscrever" onclick="inscrever(${e.id}, this)">
+                               <i class='bx bx-plus-circle'></i> Inscrever-se
+                           </button>`
+                    }
+                </div>`;
+            }).join('')}
+        </div>`;
+    }
+
+    // ---- AÇÃO DE INSCRIÇÃO ----
+    async function inscrever(idEvento, btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i> Processando...`;
+
+        try {
+            const res = await fetch(`/inscrever/${idEvento}`, { method: 'POST' });
+            const texto = await res.text();
+
+            if (res.ok) {
+                mostrarToast('✅ ' + texto);
+                await carregarDados(); // Recarrega tudo
+            } else {
+                mostrarToast(texto || 'Erro ao se inscrever.', true);
+                btn.disabled = false;
+                btn.innerHTML = `<i class='bx bx-plus-circle'></i> Inscrever-se`;
+            }
+        } catch (e) {
+            mostrarToast('Erro de conexão. Tente novamente.', true);
+            btn.disabled = false;
+            btn.innerHTML = `<i class='bx bx-plus-circle'></i> Inscrever-se`;
+        }
+    }
+
+    // ---- SEGURANÇA: escapar HTML ----
+    function escHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    // ---- INICIALIZAR ----
+    carregarDados();
+</script>
+
 </body>
 </html>

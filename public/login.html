@@ -1,37 +1,239 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Login - Endorfit</title>
- <link rel="stylesheet" href="css/login.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Endorfit</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #2E7D32;
+            --primary-dark:  #1B5E20;
+            --accent:        #1A3A34;
+            --text-color:    #1A1A1A;
+            --text-muted:    #757575;
+            --border-color:  #E0E0E0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #A7D7C5 0%, #D8F0E4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+
+        /* Faixa do topo */
+        .card-top {
+            background: var(--accent);
+            padding: 28px 36px 24px;
+            text-align: center;
+        }
+
+        .brand-icon { font-size: 32px; margin-bottom: 8px; }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #A7D7C5;
+        }
+        .brand-name span { color: #fff; }
+
+        .brand-sub {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Corpo do formulário */
+        .card-body { padding: 28px 36px 32px; }
+
+        .form-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        /* Mensagem de erro */
+        .msg-erro {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            color: #B91C1C;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+        .msg-erro.show { display: block; }
+
+        .login-form { display: flex; flex-direction: column; gap: 14px; }
+
+        .input-group { position: relative; }
+
+        .input-icon {
+            position: absolute;
+            left: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border-color);
+            font-size: 14px;
+            background: #F9F9F9;
+            color: var(--text-color);
+            transition: border-color 0.2s, background 0.2s;
+            outline: none;
+        }
+        input:focus {
+            border-color: var(--primary-color);
+            background: #fff;
+        }
+        input::placeholder { color: var(--text-muted); }
+
+        /* Toggle mostrar senha */
+        .toggle-senha {
+            position: absolute;
+            right: 12px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            display: flex;
+        }
+        .toggle-senha:hover { color: var(--accent); }
+
+        .btn-login {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            margin-top: 4px;
+        }
+        .btn-login:hover  { background: #142D28; }
+        .btn-login:active { transform: scale(0.98); }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0 4px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+        }
+
+        .link-cadastro {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .link-cadastro a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .link-cadastro a:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
 
-<div class="container">
-  <div class="card">
-    <h2>🏋️ Endorfit</h2>
-    <p class="subtitle">Acesse sua conta</p>
+<div class="login-card">
 
-    <form action="/login" method="POST">
-      
-      <div class="input-group">
-        <input type="email" name="email" placeholder="Digite seu email" required>
-      </div>
-
-      <div class="input-group">
-        <input type="password" name="senha" placeholder="Digite sua senha" required>
-      </div>
-
-      <button type="submit">Entrar</button>
-
-    </form>
-
-    <div class="link">
-      <a href="cadastro.html">Criar conta</a>
+    <div class="card-top">
+        <div class="brand-icon">🔥</div>
+        <div class="brand-name">ENDOR<span>FIT</span></div>
+        <div class="brand-sub">Academia & Eventos</div>
     </div>
 
-  </div>
+    <div class="card-body">
+        <div class="form-title">Acesse sua conta</div>
+
+        <div class="msg-erro" id="msg-erro"></div>
+
+        <form class="login-form" action="/login" method="POST" id="form-login">
+            <div class="input-group">
+                <i class='bx bx-envelope input-icon'></i>
+                <input type="email" name="email" id="email" placeholder="Seu e-mail" required autocomplete="email">
+            </div>
+
+            <div class="input-group">
+                <i class='bx bx-lock-alt input-icon'></i>
+                <input type="password" name="senha" id="senha" placeholder="Sua senha" required autocomplete="current-password">
+                <button type="button" class="toggle-senha" onclick="toggleSenha()" tabindex="-1">
+                    <i class='bx bx-hide' id="icone-olho"></i>
+                </button>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
+
+        <div class="divider">ou</div>
+
+        <div class="link-cadastro">
+            Não tem conta? <a href="cadastro.html">Criar conta grátis</a>
+        </div>
+    </div>
 </div>
+
+<script>
+    // Mostrar/ocultar senha
+    function toggleSenha() {
+        const campo = document.getElementById('senha');
+        const icone = document.getElementById('icone-olho');
+        if (campo.type === 'password') {
+            campo.type = 'text';
+            icone.className = 'bx bx-show';
+        } else {
+            campo.type = 'password';
+            icone.className = 'bx bx-hide';
+        }
+    }
+
+    // Mostrar erro se veio na URL (ex: /login.html?erro=1)
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('erro')) {
+        const el = document.getElementById('msg-erro');
+        el.textContent = 'E-mail ou senha incorretos. Tente novamente.';
+        el.classList.add('show');
+    }
+</script>
 
 </body>
 </html>
